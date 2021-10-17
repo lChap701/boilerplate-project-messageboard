@@ -16,9 +16,14 @@ module.exports = class ThreadController {
 
     crud.getBoard(board).then((boardObj) => {
       if (boardObj == null) return;
-      crud.getThreads(boardObj.name).then((threads) => (results = threads));
+      crud
+        .getThreads(boardObj.name)
+        .then(
+          (threads) =>
+            (results = threads.sort((a, b) => b.bumped_on - a.bumped_on))
+        );
     });
 
-    return results;
+    return results.length > 10 ? results.slice(0, 10) : results;
   }
 };
