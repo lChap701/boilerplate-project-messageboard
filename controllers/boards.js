@@ -13,7 +13,7 @@ module.exports = class BoardController {
    */
   static findBoard(name) {
     let board = null;
-    crud.getBoard(this.name).then((boardObj) => (board = boardObj));
+    crud.getBoard(name).then((boardObj) => (board = boardObj));
     return board;
   }
 
