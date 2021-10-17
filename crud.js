@@ -34,7 +34,7 @@ const threadSchema = new Schema(
 );
 const replySchema = new Schema({
   text: { type: String, trim: true, required: "{PATH} is required" },
-  password: { type: String, trim: true, required: "{PATH} is required" },
+  delete_password: { type: String, trim: true, required: "{PATH} is required" },
   reported: { type: Boolean, default: false },
   created_on: { type: Date, default: new Date() },
   thread: { type: Schema.Types.ObjectId, ref: "Threads" },
