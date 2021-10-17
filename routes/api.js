@@ -13,9 +13,27 @@ module.exports = function (app) {
     .route("/api/threads/:board")
     .get((req, res) => res.json(ThreadController.getThreads(req.params.board)))
 
-    .post((req, res) => {})
+    .post((req, res) => {
+      console.log(req.body);
+      let result = ThreadController.postThread(req.params.board, {
+        text: req.body.text,
+        delete_password: req.body.delete_password,
+      });
 
-    .put((req, res) => {})
+      if (typeof result == "object") {
+        res.json(result);
+      } else {
+        res.send(result);
+      }
+    })
+
+    .put((req, res) => {
+      let id = Boolean(req.body.report_id)
+        ? req.body.report_id
+        : req.body.thread_id;
+
+      res.send(ThreadController.putThread(req.params.board, id));
+    })
 
     .delete((req, res) => {});
 
