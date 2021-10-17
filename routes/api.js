@@ -11,9 +11,7 @@ const ThreadController = require("../controllers/threads");
 module.exports = function (app) {
   app
     .route("/api/threads/:board")
-    .get((req, res) => {
-      res.json(ThreadController.getThreads(req.params.board));
-    })
+    .get((req, res) => res.json(ThreadController.getThreads(req.params.board)))
 
     .post((req, res) => {})
 
