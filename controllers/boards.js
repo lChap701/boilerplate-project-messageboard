@@ -36,7 +36,7 @@ module.exports = class BoardController {
     crud
       .addBoard({ name: name, threads: [] })
       .then((boardObj) => (board = boardObj))
-      .catch((ex) => (board = ex));
+      .catch((e) => (board = e.errors.name.message));
     return board;
   }
 };
