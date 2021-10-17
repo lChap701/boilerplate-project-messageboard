@@ -66,14 +66,14 @@ const crud = {
   addThread: (data) => new Threads(data).save(),
   addReply: (data) => new Replies(data).save(),
   getBoard: (board) => Boards.findOne({ name: board }),
+  getThread: (id) => Threads.findOne({ _id: id }),
+  getReplies: (id) => Replies.findOne({ _id: id }),
   getThreads: (board) => Threads.find({ board: board }),
   getReplies: (thread) => Replies.find({ thread: thread }),
   reportThread: (id) => Threads.updateOne({ _id: id }, { reported: true }),
   reportReply: (id) => Replies.updateOne({ _id: id }, { reported: true }),
-  deleteThread: (id, password) =>
-    Threads.deleteOne({ _id: id, delete_password: password }),
-  deleteReply: (id, password) =>
-    Replies.deleteOne({ _id: id, delete_password: password }),
+  deleteThread: (id) => Threads.deleteOne({ _id: id }),
+  deleteReply: (id) => Replies.deleteOne({ _id: id }),
 };
 
 module.exports = crud;
