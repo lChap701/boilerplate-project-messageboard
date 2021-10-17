@@ -15,23 +15,30 @@ const boardSchema = new Schema({
 });
 const threadSchema = new Schema(
   {
-    name: { type: String, trim: true, required: "{PATH} is required" },
-    password: { type: String, trim: true, required: "{PATH} is required" },
+    text: { type: String, trim: true, required: "{PATH} is required" },
+    delete_password: {
+      type: String,
+      trim: true,
+      required: "{PATH} is required",
+    },
     reported: { type: Boolean, default: false },
     replies: [{ type: Schema.Types.ObjectId, ref: "Replies" }],
     board: { type: Schema.Types.ObjectId, ref: "Boards" },
   },
-  { timestamps: true }
-);
-const replySchema = new Schema(
   {
-    reply: { type: String, trim: true, required: "{PATH} is required" },
-    password: { type: String, trim: true, required: "{PATH} is required" },
-    reported: { type: Boolean, default: false },
-    thread: { type: Schema.Types.ObjectId, ref: "Threads" },
-  },
-  { timestamps: true }
+    timestamps: {
+      createdAt: "created_on",
+      updatedAt: "bumped_on",
+    },
+  }
 );
+const replySchema = new Schema({
+  text: { type: String, trim: true, required: "{PATH} is required" },
+  password: { type: String, trim: true, required: "{PATH} is required" },
+  reported: { type: Boolean, default: false },
+  created_on: { type: Date, default: new Date() },
+  thread: { type: Schema.Types.ObjectId, ref: "Threads" },
+});
 
 // Models
 const Boards = mongoose.model("Boards", boardSchema);
