@@ -59,8 +59,10 @@ const crud = {
   getReplies: (thread) => Replies.find({ thread: thread }),
   reportThread: (id) => Threads.updateOne({ _id: id }, { reported: true }),
   reportReply: (id) => Replies.updateOne({ _id: id }, { reported: true }),
-  deleteThread: (id) => Threads.deleteOne({ _id: id }),
-  deleteReply: (id) => Replies.deleteOne({ _id: id }),
+  deleteThread: (id, password) =>
+    Threads.deleteOne({ _id: id, delete_password: password }),
+  deleteReply: (id, password) =>
+    Replies.deleteOne({ _id: id, delete_password: password }),
 };
 
 module.exports = crud;
