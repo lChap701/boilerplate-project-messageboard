@@ -79,7 +79,13 @@ module.exports = class ThreadController {
 
       crud.findThread(data.thread_id).then((thread) => {
         if (bcrypt.compareSync(data.delete_password, thread.delete_password)) {
-          crud.deleteThread(thread._id).then(() => res.send("success"));
+          crud.deleteThread(thread._id).then(() => {
+            board.threads = board.threads.filter(
+              (thread) => thread._id != data.thread_id
+            );
+            board.save();
+            res.send("success");
+          });
         } else {
           res.send("incorrect password");
         }
