@@ -34,7 +34,7 @@ module.exports = class BoardController {
   static saveBoard(name) {
     let board = null;
     crud
-      .addBoard({ name: name })
+      .addBoard({ name: name, threads: [] })
       .then((boardObj) => (board = boardObj))
       .catch((ex) => (board = ex));
     return board;
