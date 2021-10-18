@@ -17,7 +17,15 @@ module.exports = class ThreadController {
    */
   static getThreads(board, res) {
     crud.getThreads(board).then((threads) => {
-      let results = threads.sort((a, b) => b.bumped_on - a.bumped_on);
+      let results = threads
+        .sort((a, b) => b.bumped_on - a.bumped_on)
+        .map((thread) => {
+          return {
+            _id: thread._id,
+            text: thread.text,
+            created_on: thread.created_on,
+          };
+        });
       res.json(results.length > 10 ? results.slice(0, 10) : results);
     });
   }
