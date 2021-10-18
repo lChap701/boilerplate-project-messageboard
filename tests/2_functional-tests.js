@@ -11,10 +11,18 @@ suite("Functional Tests", function () {
   /* My Tests */
   this.afterAll(() => {
     crud.getBoard("test").then((board) => {
-      board.threads.forEach((id) => {
-        crud.deleteThread(id).then(() => {
-          console.log("removed thread " + id);
+      board.threads.forEach((threadId) => {
+        crud.getReplies(threadId).then((replies) => {
+          replies.forEach((reply) => {
+            crud
+              .deleteReply(reply._id)
+              .then(() => console.log("removed reply " + reply._id));
+          });
         });
+
+        crud
+          .deleteThread(threadId)
+          .then(() => console.log("removed thread " + threadId));
       });
 
       crud
