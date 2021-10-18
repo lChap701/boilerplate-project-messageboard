@@ -84,6 +84,10 @@ suite("Functional Tests", function () {
             JSON.parse(res.text).reported,
             "'reported' should be boolean"
           );
+          assert.isFalse(
+            JSON.parse(res.text).reported,
+            "'reported' should be set to 'false'"
+          );
           assert.property(
             JSON.parse(res.text),
             "delete_password",
