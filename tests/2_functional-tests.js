@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 suite("Functional Tests", function () {
   /* My Tests */
   this.afterAll(() => {
-    crud.getBoard("test").then((board) => {
+    crud.getBoard("tests").then((board) => {
       board.threads.forEach((threadId) => {
         crud.getReplies(threadId).then((replies) => {
           replies.forEach((reply) => {
@@ -33,6 +33,7 @@ suite("Functional Tests", function () {
 
   suite("Testing /api/threads/", () => {
     const PATH = "/api/threads/";
+    let id = "";
 
     test("1)  POST Test", (done) => {
       const data = {
@@ -42,7 +43,7 @@ suite("Functional Tests", function () {
 
       chai
         .request(server)
-        .post(PATH + "test")
+        .post(PATH + "tests")
         .send(data)
         .end((err, res) => {
           assert.equal(res.status, 200, "response status should be 200");
@@ -102,6 +103,7 @@ suite("Functional Tests", function () {
             JSON.parse(res.text).replies,
             "'replies' should be an array"
           );
+          id = JSON.parse(res.text)._id;
           done();
         });
     });
@@ -109,7 +111,7 @@ suite("Functional Tests", function () {
     test("2)  GET Test", (done) => {
       chai
         .request(server)
-        .get(PATH + "test")
+        .get(PATH + "tests")
         .end((err, res) => {
           assert.equal(res.status, 200, "response status should be 200");
           assert.isArray(JSON.parse(res.text), "response should be an array");
@@ -168,6 +170,22 @@ suite("Functional Tests", function () {
             "delete_text",
             "'replies' should contain objects without a property of 'delete_text'"
           );*/
+          done();
+        });
+    });
+
+    test("3)  PUT Test", (done) => {
+      chai
+        .request(server)
+        .put(PATH + "tests")
+        .send({ report_id: id })
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.equal(
+            res.text,
+            "success",
+            "response should comeback as 'success'"
+          );
           done();
         });
     });
