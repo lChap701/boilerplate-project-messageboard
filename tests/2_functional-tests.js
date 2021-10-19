@@ -189,5 +189,37 @@ suite("Functional Tests", function () {
           done();
         });
     });
+
+    test("4)  Invalid DELETE Test", (done) => {
+      chai
+        .request(server)
+        .delete(PATH + "tests")
+        .send({ thread_id: id, delete_password: "fourthTest" })
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.equal(
+            res.text,
+            "incorrect password",
+            "response should comeback as 'incorrect password'"
+          );
+          done();
+        });
+    });
+
+    test("5)  Valid DELETE Test", (done) => {
+      chai
+        .request(server)
+        .delete(PATH + "tests")
+        .send({ thread_id: id, delete_password: "firstTest" })
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.equal(
+            res.text,
+            "success",
+            "response should comeback as 'success'"
+          );
+          done();
+        });
+    });
   });
 });
