@@ -3,7 +3,7 @@ const crud = require("../crud");
 const bcrypt = require("bcrypt");
 
 /**
- * Module that handles all HTTP requests for /api/threads
+ * Module that handles HTTP requests for /api/threads
  * @module ./controllers/threads
  *
  */
