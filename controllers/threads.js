@@ -103,12 +103,13 @@ module.exports = class ThreadController {
       if (
         threads.filter((thread) => thread._id == data.thread_id).length == 0
       ) {
+        res.send("thread was not found in board " + board.name);
         return;
       }
 
-      crud.findThread(data.thread_id).then((thread) => {
+      crud.getThread(data.thread_id).then((thread) => {
         if (bcrypt.compareSync(data.delete_password, thread.delete_password)) {
-          crud.deleteThread(thread._id).then(() => {
+          crud.deleteThread(data.thread_id).then(() => {
             board.threads = board.threads.filter(
               (thread) => thread._id != data.thread_id
             );
