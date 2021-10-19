@@ -34,7 +34,7 @@ suite("Functional Tests", function () {
   suite("Testing /api/threads/", () => {
     const PATH = "/api/threads/";
 
-    test("1)  Valid POST Test", (done) => {
+    test("1)  POST Test", (done) => {
       const data = {
         text: "Test 1",
         delete_password: "firstTest",
@@ -102,6 +102,72 @@ suite("Functional Tests", function () {
             JSON.parse(res.text).replies,
             "'replies' should be an array"
           );
+          done();
+        });
+    });
+
+    test("2)  GET Test", (done) => {
+      chai
+        .request(server)
+        .get(PATH + "test")
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.isArray(JSON.parse(res.text), "response should be an array");
+          assert.isAtMost(
+            JSON.parse(res.text).length,
+            10,
+            "response's length should not exceed 10"
+          );
+          assert.property(
+            JSON.parse(res.text)[0],
+            "_id",
+            "response should contain objects with a property of '_id'"
+          );
+          assert.property(
+            JSON.parse(res.text)[0],
+            "text",
+            "response should contain objects with a property of 'text'"
+          );
+          assert.property(
+            JSON.parse(res.text)[0],
+            "created_on",
+            "response should contain objects with a property of 'created_on'"
+          );
+          assert.property(
+            JSON.parse(res.text)[0],
+            "replycount",
+            "response should contain objects with a property of 'replycount'"
+          );
+          assert.property(
+            JSON.parse(res.text)[0],
+            "replies",
+            "response should contain objects with a property of 'replies'"
+          );
+          assert.isAtMost(
+            JSON.parse(res.text)[0].replies.length,
+            3,
+            "length of 'replies' should not exceed 3"
+          );
+          assert.notProperty(
+            JSON.parse(res.text)[0],
+            "reported",
+            "response should contain objects without a property of 'reported'"
+          );
+          assert.notProperty(
+            JSON.parse(res.text)[0],
+            "delete_text",
+            "response should contain objects without a property of 'delete_text'"
+          );
+          /*assert.notProperty(
+            JSON.parse(res.text)[0].replies[0],
+            "reported",
+            "'replies' should contain objects without a property of 'reported'"
+          );
+          assert.notProperty(
+            JSON.parse(res.text)[0].replies[0],
+            "delete_text",
+            "'replies' should contain objects without a property of 'delete_text'"
+          );*/
           done();
         });
     });
