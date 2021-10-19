@@ -4,13 +4,13 @@ const bcrypt = require("bcrypt");
 //const ObjectId = require("mongodb").ObjectId;
 
 /**
- * Module that handles all HTTP requests for threads
+ * Module that handles all HTTP requests for /api/threads
  * @module ./controllers/threads
  *
  */
 module.exports = class ThreadController {
   /**
-   * Gets all threads for GET requests
+   * Gets up to 10 threads and 3 replies during GET requests
    * @param {*} board     Represents the board to search for
    * @param {*} res       Represents the response
    *
@@ -19,14 +19,35 @@ module.exports = class ThreadController {
     crud.getThreads(board).then((threads) => {
       let results = threads
         .sort((a, b) => b.bumped_on - a.bumped_on)
-        .map((thread) => {
-          return {
-            _id: thread._id,
-            text: thread.text,
-            created_on: thread.created_on,
-          };
+        .slice(0, 10);
+
+      results.forEach((thread, i) => {
+        crud.getReplies(thread).then((replies) => {
+          let replyResults = replies
+            .sort((a, b) => b.created_on - a.created_on)
+            .slice(0, 3);
+
+          if (i == results.length - 1) {
+            res.json(
+              results.map((result) => {
+                return {
+                  _id: result._id,
+                  text: result.text,
+                  created_on: result.created_on,
+                  replycount: result.replies.length,
+                  replies: replyResults.map((reply) => {
+                    return {
+                      _id: reply._id,
+                      text: reply.text,
+                      created_on: reply.created_on,
+                    };
+                  }),
+                };
+              })
+            );
+          }
         });
-      res.json(results.length > 10 ? results.slice(0, 10) : results);
+      });
     });
   }
 
