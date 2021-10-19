@@ -22,7 +22,6 @@ module.exports = function (app) {
     })
 
     .post((req, res) => {
-      console.log(req.body);
       crud.getBoard(req.params.board).then((board) => {
         if (!board) {
           crud

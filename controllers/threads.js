@@ -1,7 +1,6 @@
 require("dotenv").config();
 const crud = require("../crud");
 const bcrypt = require("bcrypt");
-//const ObjectId = require("mongodb").ObjectId;
 
 /**
  * Module that handles all HTTP requests for /api/threads
