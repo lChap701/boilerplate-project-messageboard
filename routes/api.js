@@ -3,6 +3,7 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const crud = require("../crud");
 const ThreadController = require("../controllers/threads");
+const ReplyController = require("../controllers/replies");
 
 /**
  * Module that handles most of the routing
@@ -91,5 +92,87 @@ module.exports = function (app) {
       });
     });
 
-  app.route("/api/replies/:board");
+  app
+    .route("/api/replies/:board")
+    .get((req, res) => {
+      crud.getBoard(req.params.board).then((board) => {
+        if (!board) return;
+        crud.getThread(req.body.thread_id).then((thread) => {
+          if (!thread || thread.board != board._id) return;
+          ReplyController.getReplies(thread, res);
+        });
+      });
+    })
+
+    .post((req, res) => {
+      crud.getBoard(req.params.board).then((board) => {
+        if (!board) {
+          res.send("thread was not found in board " + req.params.board);
+          return;
+        }
+
+        crud.getThread(req.body.thread_id).then((thread) => {
+          if (!thread || thread.board != board._id) {
+            res.send("thread was not found in board " + req.params.board);
+            return;
+          }
+
+          ReplyController.postReply(
+            thread,
+            {
+              text: req.body.text,
+              delete_password: bcrypt.hashSync(
+                req.body.delete_password,
+                parseInt(process.env.SALT_ROUNDS)
+              ),
+              thread: thread._id,
+            },
+            res
+          );
+        });
+      });
+    })
+
+    .put((req, res) => {
+      crud.getBoard(req.params.board).then((board) => {
+        if (!board) {
+          res.send("thread was not found in board " + req.params.board);
+          return;
+        }
+
+        crud.getThread(req.body.thread_id).then((thread) => {
+          if (!thread || thread.board != board._id) {
+            res.send("thread was not found in board " + req.params.board);
+            return;
+          }
+
+          ReplyController.putReply(thread, req.body.reply_id, res);
+        });
+      });
+    })
+
+    .delete((req, res) => {
+      crud.getBoard(req.params.board).then((board) => {
+        if (!board) {
+          res.send("thread was not found in board " + req.params.board);
+          return;
+        }
+
+        crud.getThread(req.body.thread_id).then((thread) => {
+          if (!thread || thread.board != board._id) {
+            res.send("thread was not found in board " + req.params.board);
+            return;
+          }
+
+          ReplyController.deleteReply(
+            thread,
+            {
+              reply_id: req.body.reply_id,
+              delete_password: req.body.delete_password,
+            },
+            res
+          );
+        });
+      });
+    });
 };
