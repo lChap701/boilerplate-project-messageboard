@@ -52,7 +52,7 @@ module.exports = class ThreadController {
 
   /**
    * Saves a new thread in the DB during POST
-   * @param {*} board     Represents the board with the thread
+   * @param {*} board     Represents the board that will contain the thread
    * @param {*} data      Represents the thread to save
    * @param {*} res       Represents the response
    *
