@@ -81,11 +81,14 @@ module.exports = function (app) {
           return;
         }
 
-        ThreadController.deleteThread(req.params.board, {
-          thread_id: req.body.thread_id,
-          delete_password: req.body.delete_password,
-          res,
-        });
+        ThreadController.deleteThread(
+          board,
+          {
+            thread_id: req.body.thread_id,
+            delete_password: req.body.delete_password,
+          },
+          res
+        );
       });
     });
 
