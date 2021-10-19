@@ -68,10 +68,9 @@ module.exports = function (app) {
       crud.getBoard(req.params.board).then((board) => {
         if (!board) {
           res.send("thread was not found in board " + req.params.board);
-          return;
+        } else {
+          ThreadController.putThread(board, id, res);
         }
-
-        ThreadController.putThread(board, id, res);
       });
     })
 
