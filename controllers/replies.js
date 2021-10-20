@@ -87,7 +87,7 @@ module.exports = class ReplyController {
 
       crud.getReply(data.reply_id).then((reply) => {
         if (bcrypt.compareSync(data.delete_password, reply.delete_password)) {
-          crud.removeReply(data.reply_id).then(() => res.send("success"));
+          crud.removeReplyText(data.reply_id).then(() => res.send("success"));
         } else {
           res.send("incorrect password");
         }
