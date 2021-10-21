@@ -221,4 +221,25 @@ suite("Functional Tests", function () {
         });
     });
   });
+
+  suite("Testing /api/replies/", () => {
+    const PATH = "/api/replies/";
+    let id = "";
+
+    test("1)  POST Test", (done) => {
+      const data = {
+        text: "Test 11",
+        delete_password: "eleventhTest",
+      };
+
+      chai
+        .request(server)
+        .post(PATH + "tests")
+        .send(data)
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          console.log(res.text);
+        });
+    });
+  });
 });
