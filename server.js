@@ -8,6 +8,8 @@ const apiRoutes = require("./routes/api.js");
 const fccTestingRoutes = require("./routes/fcctesting.js");
 const runner = require("./test-runner");
 
+//const createTestData = require("./testData/createData");
+
 /**
  * Module that contains the entire application
  * @module ./server
@@ -60,6 +62,7 @@ const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
   if (process.env.NODE_ENV === "test") {
     console.log("Running Tests...");
+    //createTestData();
     setTimeout(function () {
       try {
         runner.run();
