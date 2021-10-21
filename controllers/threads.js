@@ -1,6 +1,6 @@
 require("dotenv").config();
 const crud = require("../crud");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 /**
  * Module that handles HTTP requests for /api/threads

@@ -1,6 +1,6 @@
 "use strict";
 require("dotenv").config();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const crud = require("../crud");
 const ThreadController = require("../controllers/threads");
 const ReplyController = require("../controllers/replies");
