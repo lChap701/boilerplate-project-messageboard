@@ -30,6 +30,8 @@ suite("Functional Tests", function () {
     });
   });
 
+  this.timeout(5000);
+
   suite("Testing /api/threads/", () => {
     const PATH = "/api/threads/";
     let id = "";
@@ -227,19 +229,35 @@ suite("Functional Tests", function () {
     let id = "";
 
     test("1)  POST Test", (done) => {
-      const data = {
-        text: "Test 11",
-        delete_password: "eleventhTest",
-      };
+      crud.getBoard("tests").then((board) => {
+        crud
+          .addThread({
+            text: "testing thread",
+            delete_password: "12345",
+            board: board._id,
+          })
+          .then((thread) => {
+            board.threads.push(thread);
+            board.save();
+            id = thread._id;
 
-      chai
-        .request(server)
-        .post(PATH + "tests")
-        .send(data)
-        .end((err, res) => {
-          assert.equal(res.status, 200, "response status should be 200");
-          console.log(res.text);
-        });
+            const data = {
+              thread_id: id,
+              text: "Test 11",
+              delete_password: "eleventhTest",
+            };
+
+            chai
+              .request(server)
+              .post(PATH + "tests")
+              .send(data)
+              .end((err, res) => {
+                assert.equal(res.status, 200, "response status should be 200");
+                console.log(res.text);
+                done();
+              });
+          });
+      });
     });
   });
 });
