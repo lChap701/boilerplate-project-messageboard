@@ -1,6 +1,7 @@
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const assert = chai.assert;
+const ObjectId = require("mongodb").ObjectId;
 const server = require("../server");
 const crud = require("../crud");
 
@@ -30,7 +31,7 @@ suite("Functional Tests", function () {
     });
   });
 
-  this.timeout(5000);
+  //this.timeout(5000);
 
   suite("Testing /api/threads/", () => {
     const PATH = "/api/threads/";
@@ -161,16 +162,6 @@ suite("Functional Tests", function () {
             "delete_text",
             "response should contain objects without a property of 'delete_text'"
           );
-          /*assert.notProperty(
-            JSON.parse(res.text)[0].replies[0],
-            "reported",
-            "'replies' should contain objects without a property of 'reported'"
-          );
-          assert.notProperty(
-            JSON.parse(res.text)[0].replies[0],
-            "delete_text",
-            "'replies' should contain objects without a property of 'delete_text'"
-          );*/
           done();
         });
     });
@@ -253,7 +244,58 @@ suite("Functional Tests", function () {
               .send(data)
               .end((err, res) => {
                 assert.equal(res.status, 200, "response status should be 200");
-                console.log(res.text);
+                assert.isObject(
+                  JSON.parse(res.text),
+                  "response should return an object"
+                );
+                assert.property(
+                  JSON.parse(res.text),
+                  "replies",
+                  "response should contain a property of 'replies'"
+                );
+                assert.isArray(
+                  JSON.parse(res.text).replies,
+                  "'replies' should be an array"
+                );
+                assert.property(
+                  JSON.parse(res.text).replies[0],
+                  "_id",
+                  "'replies' should contain a property of '_id'"
+                );
+                assert.propertyVal(
+                  JSON.parse(res.text).replies[0],
+                  "text",
+                  "Test 11",
+                  "'replies' should contain a property of 'text' with a value of 'Test 11'"
+                );
+                assert.property(
+                  JSON.parse(res.text).replies[0],
+                  "reported",
+                  "response should contain a property of 'reported'"
+                );
+                assert.isBoolean(
+                  JSON.parse(res.text).replies[0].reported,
+                  "'reported' should be boolean"
+                );
+                assert.isFalse(
+                  JSON.parse(res.text).replies[0].reported,
+                  "'reported' should be set to 'false'"
+                );
+                assert.property(
+                  JSON.parse(res.text).replies[0],
+                  "delete_password",
+                  "response should contain a property of 'delete_password'"
+                );
+                assert.property(
+                  JSON.parse(res.text).replies[0],
+                  "created_on",
+                  "'replies' should contain a property of 'created_on'"
+                );
+                assert.isTrue(
+                  JSON.parse(res.text).replies[0].created_on ==
+                    JSON.parse(res.text).bumped_on,
+                  "the 'created_on' of reply should be the same as the 'bumped_on' of thread"
+                );
                 done();
               });
           });
