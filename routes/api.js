@@ -98,7 +98,7 @@ module.exports = function (app) {
       crud.getBoard(req.params.board).then((board) => {
         if (!board) return;
         crud.getThread(req.body.thread_id).then((thread) => {
-          if (!thread || thread.board != board._id) return;
+          if (!thread || String(thread.board) != String(board._id)) return;
           ReplyController.getReplies(thread, res);
         });
       });
@@ -112,7 +112,7 @@ module.exports = function (app) {
         }
 
         crud.getThread(req.body.thread_id).then((thread) => {
-          if (!thread || thread.board != board._id) {
+          if (!thread || String(thread.board) != String(board._id)) {
             res.send("thread was not found in board " + req.params.board);
             return;
           }
@@ -141,7 +141,7 @@ module.exports = function (app) {
         }
 
         crud.getThread(req.body.thread_id).then((thread) => {
-          if (!thread || thread.board != board._id) {
+          if (!thread || String(thread.board) != String(board._id)) {
             res.send("thread was not found in board " + req.params.board);
             return;
           }
@@ -159,7 +159,7 @@ module.exports = function (app) {
         }
 
         crud.getThread(req.body.thread_id).then((thread) => {
-          if (!thread || thread.board != board._id) {
+          if (!thread || String(thread.board) != String(board._id)) {
             res.send("thread was not found in board " + req.params.board);
             return;
           }

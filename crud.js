@@ -24,11 +24,12 @@ const threadSchema = new Schema(
     reported: { type: Boolean, default: false },
     replies: [{ type: Schema.Types.ObjectId, ref: "Replies" }],
     board: { type: Schema.Types.ObjectId, ref: "Boards" },
+    bumped_on: { type: Date },
   },
   {
     timestamps: {
       createdAt: "created_on",
-      updatedAt: "bumped_on",
+      updatedAt: false,
     },
   }
 );
@@ -72,7 +73,8 @@ const crud = {
   getReplies: (thread) => Replies.find({ thread: thread }),
   reportThread: (id) => Threads.updateOne({ _id: id }, { reported: true }),
   reportReply: (id) => Replies.updateOne({ _id: id }, { reported: true }),
-  removeReplyText: (id) => Replies.updateOne({ _id: id }, { text: "[deleted]" }),
+  removeReplyText: (id) =>
+    Replies.updateOne({ _id: id }, { text: "[deleted]" }),
   deleteBoard: (id) => Boards.deleteOne({ _id: id }),
   deleteThread: (id) => Threads.deleteOne({ _id: id }),
   deleteReply: (id) => Replies.deleteOne({ _id: id }),

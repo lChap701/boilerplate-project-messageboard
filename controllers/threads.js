@@ -63,6 +63,8 @@ module.exports = class ThreadController {
       .then((thread) => {
         board.threads.push(thread);
         board.save();
+        thread.bumped_on = thread.created_on;
+        thread.save();
         res.json(thread);
       })
       .catch((e) => {

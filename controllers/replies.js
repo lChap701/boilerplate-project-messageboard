@@ -43,8 +43,9 @@ module.exports = class ReplyController {
       .addReply(data)
       .then((reply) => {
         thread.replies.push(reply);
+        thread.bumped_on = reply.created_on;
         thread.save();
-        res.json(reply);
+        res.json(thread);
       })
       .catch((e) => {
         console.log(JSON.stringify(e.errors));
