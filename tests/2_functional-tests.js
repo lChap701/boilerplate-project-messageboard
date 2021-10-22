@@ -1,7 +1,6 @@
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const assert = chai.assert;
-const ObjectId = require("mongodb").ObjectId;
 const server = require("../server");
 const crud = require("../crud");
 
@@ -159,8 +158,8 @@ suite("Functional Tests", function () {
           );
           assert.notProperty(
             JSON.parse(res.text)[0],
-            "delete_text",
-            "response should contain objects without a property of 'delete_text'"
+            "delete_password",
+            "response should contain objects without a property of 'delete_password'"
           );
           done();
         });
@@ -217,7 +216,8 @@ suite("Functional Tests", function () {
 
   suite("Testing /api/replies/", () => {
     const PATH = "/api/replies/";
-    let id = "";
+    let threadId = "";
+    let replyId = "";
 
     test("1)  POST Test", (done) => {
       crud.getBoard("tests").then((board) => {
@@ -230,10 +230,10 @@ suite("Functional Tests", function () {
           .then((thread) => {
             board.threads.push(thread);
             board.save();
-            id = thread._id;
+            threadId = thread._id;
 
             const data = {
-              thread_id: id,
+              thread_id: threadId,
               text: "Test 11",
               delete_password: "eleventhTest",
             };
@@ -296,10 +296,120 @@ suite("Functional Tests", function () {
                     JSON.parse(res.text).bumped_on,
                   "the 'created_on' of reply should be the same as the 'bumped_on' of thread"
                 );
+                replyId = JSON.parse(res.text).replies[0]._id;
                 done();
               });
           });
       });
+    });
+
+    test("2)  GET Test", (done) => {
+      chai
+        .request(server)
+        .get(PATH + "tests?thread_id=" + threadId.toString())
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.property(
+            JSON.parse(res.text),
+            "replies",
+            "response should contain a property of 'replies'"
+          );
+          assert.isArray(
+            JSON.parse(res.text).replies,
+            "'replies' should be an array"
+          );
+          assert.isAbove(
+            JSON.parse(res.text).replies.length,
+            0,
+            "the length of 'replies' should be greater than '0'"
+          );
+          assert.property(
+            JSON.parse(res.text).replies[0],
+            "_id",
+            "'replies' should contain objects with a property of '_id'"
+          );
+          assert.property(
+            JSON.parse(res.text).replies[0],
+            "text",
+            "'replies' should contain objects with a property of 'text'"
+          );
+          assert.property(
+            JSON.parse(res.text).replies[0],
+            "created_on",
+            "'replies' should contain objects with a property of 'created_on'"
+          );
+          assert.notProperty(
+            JSON.parse(res.text).replies[0],
+            "reported",
+            "response should contain objects without a property of 'reported'"
+          );
+          assert.notProperty(
+            JSON.parse(res.text).replies[0],
+            "delete_password",
+            "response should contain objects without a property of 'delete_password'"
+          );
+          done();
+        });
+    });
+
+    test("3)  PUT Test", (done) => {
+      chai
+        .request(server)
+        .put(PATH + "tests")
+        .send({ thread_id: threadId, reply_id: replyId })
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.equal(
+            res.text,
+            "success",
+            "response should comeback as 'success'"
+          );
+          done();
+        });
+    });
+
+    test("4)  Invalid DELETE Test", (done) => {
+      const data = {
+        thread_id: threadId,
+        reply_id: replyId,
+        delete_password: "12345",
+      };
+
+      chai
+        .request(server)
+        .delete(PATH + "tests")
+        .send(data)
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.equal(
+            res.text,
+            "incorrect password",
+            "response should comeback as 'incorrect password'"
+          );
+          done();
+        });
+    });
+
+    test("5)  Valid DELETE Test", (done) => {
+      const data = {
+        thread_id: threadId,
+        reply_id: replyId,
+        delete_password: "eleventhTest",
+      };
+
+      chai
+        .request(server)
+        .delete(PATH + "tests")
+        .send(data)
+        .end((err, res) => {
+          assert.equal(res.status, 200, "response status should be 200");
+          assert.equal(
+            res.text,
+            "success",
+            "response should comeback as 'success'"
+          );
+          done();
+        });
     });
   });
 });
