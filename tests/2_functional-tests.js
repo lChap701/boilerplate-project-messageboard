@@ -30,8 +30,6 @@ suite("Functional Tests", function () {
     });
   });
 
-  //this.timeout(5000);
-
   suite("Testing /api/threads/", () => {
     const PATH = "/api/threads/";
     let id = "";
