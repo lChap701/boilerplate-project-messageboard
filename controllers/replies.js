@@ -16,6 +16,7 @@ module.exports = class ReplyController {
    */
   static getReplies(thread, res) {
     crud.getReplies(thread).then((replies) => {
+      replies.sort((a, b) => b.created_on - a.created_on);
       res.json({
         _id: thread._id,
         text: thread.text,

@@ -15,39 +15,32 @@ module.exports = class ThreadController {
    *
    */
   static getThreads(board, res) {
-    crud.getThreads(board).then((threads) => {
-      let results = threads
-        .sort((a, b) => b.bumped_on - a.bumped_on)
-        .slice(0, 10);
-
-      results.forEach((thread, i) => {
-        crud.getReplies(thread).then((replies) => {
-          let replyResults = replies
-            .sort((a, b) => b.created_on - a.created_on)
-            .slice(0, 3);
-
-          if (i == results.length - 1) {
-            res.json(
-              results.map((result) => {
-                return {
-                  _id: result._id,
-                  text: result.text,
-                  created_on: result.created_on,
-                  replycount: result.replies.length,
-                  replies: replyResults.map((reply) => {
-                    return {
-                      _id: reply._id,
-                      text: reply.text,
-                      created_on: reply.created_on,
-                    };
-                  }),
-                };
-              })
-            );
-          }
-        });
+    crud
+      .getThreads(board)
+      .populate({ path: "replies" })
+      .then((threads) => {
+        threads.sort((a, b) => b.bumped_on - a.bumped_on).slice(0, 10);
+        res.json(
+          threads.map((thread) => {
+            return {
+              _id: thread._id,
+              text: thread.text,
+              created_on: thread.created_on,
+              replycount: thread.replies.length,
+              replies: thread.replies
+                .sort((a, b) => b.created_on - a.created_on)
+                .slice(0, 3)
+                .map((reply) => {
+                  return {
+                    _id: reply._id,
+                    text: reply.text,
+                    created_on: reply.created_on,
+                  };
+                }),
+            };
+          })
+        );
       });
-    });
   }
 
   /**
@@ -111,11 +104,15 @@ module.exports = class ThreadController {
       crud.getThread(data.thread_id).then((thread) => {
         if (bcrypt.compareSync(data.delete_password, thread.delete_password)) {
           crud.deleteThread(data.thread_id).then(() => {
-            board.threads = board.threads.filter(
-              (thread) => thread._id != data.thread_id
-            );
-            board.save();
-            res.send("success");
+            thread.replies.forEach((replyId) => {
+              crud.deleteReply(replyId).then(() => {
+                board.threads = board.threads.filter(
+                  (thread) => thread._id != data.thread_id
+                );
+                board.save();
+                res.send("success");
+              });
+            });
           });
         } else {
           res.send("incorrect password");
