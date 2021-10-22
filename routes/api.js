@@ -96,8 +96,8 @@ module.exports = function (app) {
     .route("/api/replies/:board")
     .get((req, res) => {
       crud.getBoard(req.params.board).then((board) => {
-        if (!board) return;
-        crud.getThread(req.body.thread_id).then((thread) => {
+        if (!board || !req.query.thread_id) return;
+        crud.getThread(req.query.thread_id).then((thread) => {
           if (!thread || String(thread.board) != String(board._id)) return;
           ReplyController.getReplies(thread, res);
         });
