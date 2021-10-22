@@ -19,9 +19,9 @@ module.exports = class ThreadController {
       .getThreads(board)
       .populate({ path: "replies" })
       .then((threads) => {
-        threads.sort((a, b) => b.bumped_on - a.bumped_on).slice(0, 10);
+        threads.sort((a, b) => b.bumped_on - a.bumped_on);
         res.json(
-          threads.map((thread) => {
+          threads.slice(0, 10).map((thread) => {
             return {
               _id: thread._id,
               text: thread.text,
