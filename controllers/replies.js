@@ -46,7 +46,13 @@ module.exports = class ReplyController {
         thread.replies.push(reply);
         thread.bumped_on = reply.created_on;
         thread.save();
-        res.json(thread);
+
+        // For testing purposes
+        if (process.env.NODE_ENV == "test") {
+          res.json(thread);
+        } else {
+          res.redirect("/b/" + thread.board.name + "/" + thread._id);
+        }
       })
       .catch((e) => {
         console.log(JSON.stringify(e.errors));

@@ -111,25 +111,28 @@ module.exports = function (app) {
           return;
         }
 
-        crud.getThread(req.body.thread_id).then((thread) => {
-          if (!thread || String(thread.board) != String(board._id)) {
-            res.send("thread was not found in board " + req.params.board);
-            return;
-          }
+        crud
+          .getThread(req.body.thread_id)
+          .populate({ path: "board" })
+          .then((thread) => {
+            if (!thread || String(thread.board._id) != String(board._id)) {
+              res.send("thread was not found in board " + req.params.board);
+              return;
+            }
 
-          ReplyController.postReply(
-            thread,
-            {
-              text: req.body.text,
-              delete_password: bcrypt.hashSync(
-                req.body.delete_password,
-                parseInt(process.env.SALT_ROUNDS)
-              ),
-              thread: thread._id,
-            },
-            res
-          );
-        });
+            ReplyController.postReply(
+              thread,
+              {
+                text: req.body.text,
+                delete_password: bcrypt.hashSync(
+                  req.body.delete_password,
+                  parseInt(process.env.SALT_ROUNDS)
+                ),
+                thread: thread._id,
+              },
+              res
+            );
+          });
       });
     })
 

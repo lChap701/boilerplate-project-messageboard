@@ -56,9 +56,16 @@ module.exports = class ThreadController {
       .then((thread) => {
         board.threads.push(thread);
         board.save();
+
         thread.bumped_on = thread.created_on;
         thread.save();
-        res.json(thread);
+
+        // For testing purposes
+        if (process.env.NODE_ENV == "test") {
+          res.json(thread);
+        } else {
+          res.redirect("/b/" + board.name + "/");
+        }
       })
       .catch((e) => {
         console.log(JSON.stringify(e.errors));
