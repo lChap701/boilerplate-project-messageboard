@@ -46,63 +46,64 @@ suite("Functional Tests", function () {
         .send(data)
         .end((err, res) => {
           assert.equal(res.status, 200, "response status should be 200");
-          assert.isObject(
+          assert.isArray(
             JSON.parse(res.text),
-            "response should return an object"
+            "response should return an array"
           );
           assert.property(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "_id",
             "response should contain a property of '_id'"
           );
           assert.propertyVal(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "text",
             "Test 1",
             "response should contain a property of 'text' with a value of 'Test 1'"
           );
           assert.property(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "created_on",
             "response should contain a property of 'created_on'"
           );
           assert.property(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "bumped_on",
             "response should contain a property of 'bumped_on'"
           );
           assert.isTrue(
-            JSON.parse(res.text).created_on == JSON.parse(res.text).bumped_on,
+            JSON.parse(res.text)[0].created_on ==
+              JSON.parse(res.text)[0].bumped_on,
             "'created_on' should be the same as 'bumped_on'"
           );
           assert.property(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "reported",
             "response should contain a property of 'reported'"
           );
           assert.isBoolean(
-            JSON.parse(res.text).reported,
+            JSON.parse(res.text)[0].reported,
             "'reported' should be boolean"
           );
           assert.isFalse(
-            JSON.parse(res.text).reported,
+            JSON.parse(res.text)[0].reported,
             "'reported' should be set to 'false'"
           );
           assert.property(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "delete_password",
             "response should contain a property of 'delete_password'"
           );
           assert.property(
-            JSON.parse(res.text),
+            JSON.parse(res.text)[0],
             "replies",
             "response should contain a property of 'replies'"
           );
           assert.isArray(
-            JSON.parse(res.text).replies,
+            JSON.parse(res.text)[0].replies,
             "'replies' should be an array"
           );
-          id = JSON.parse(res.text)._id;
+          id = JSON.parse(res.text)[0]._id;
           done();
         });
     });

@@ -54,15 +54,15 @@ module.exports = class ThreadController {
     crud
       .addThread(data)
       .then((thread) => {
-        board.threads.push(thread);
-        board.save();
-
         thread.bumped_on = thread.created_on;
         thread.save();
 
+        board.threads.push(thread);
+        board.save();
+
         // For testing purposes
         if (process.env.NODE_ENV == "test") {
-          res.json(thread);
+          res.json(board.threads);
         } else {
           res.redirect("/b/" + board.name + "/");
         }
