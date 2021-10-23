@@ -27,16 +27,16 @@ module.exports = function (app) {
         if (!board) {
           crud
             .addBoard({ name: req.params.board, threads: [] })
-            .then((boardObj) => {
+            .then((newBoard) => {
               ThreadController.postThread(
-                boardObj,
+                newBoard,
                 {
                   text: req.body.text,
                   delete_password: bcrypt.hashSync(
                     req.body.delete_password,
                     parseInt(process.env.SALT_ROUNDS)
                   ),
-                  board: boardObj._id,
+                  board: newBoard._id,
                 },
                 res
               );
