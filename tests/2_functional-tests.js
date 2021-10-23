@@ -137,6 +137,11 @@ suite("Functional Tests", function () {
           );
           assert.property(
             JSON.parse(res.text)[0],
+            "bumped_on",
+            "response should contain objects with a property of 'bumped_on'"
+          );
+          assert.property(
+            JSON.parse(res.text)[0],
             "replycount",
             "response should contain objects with a property of 'replycount'"
           );

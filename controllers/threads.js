@@ -26,6 +26,7 @@ module.exports = class ThreadController {
               _id: thread._id,
               text: thread.text,
               created_on: thread.created_on,
+              bumped_on: thread.bumped_on,
               replycount: thread.replies.length,
               replies: thread.replies
                 .sort((a, b) => b.created_on - a.created_on)
@@ -62,7 +63,7 @@ module.exports = class ThreadController {
 
         // For testing purposes
         if (process.env.NODE_ENV == "test") {
-          res.json(board.threads);
+          res.json(board.threads.sort((a, b) => b.bumped_on - a.bumped_on));
         } else {
           res.redirect("/b/" + board.name + "/");
         }
